@@ -25,6 +25,7 @@ Source0:	ftp://ftp.dlink.co.uk/pub/adapters/dfe-550tx/dlh5x-2.2.tgz
 Source1:	dlink-sundance.tar.gz
 # Source1-md5:	8b5fe5f29db3480ab2c5167e831604d3
 Patch0:		%{name}-header.patch
+Patch1:		%{name}-alpha.patch
 %{!?_without_dist_kernel:BuildRequires:	kernel-headers }
 BuildRequires:	%{kgcc_package}
 BuildRequires:	rpmbuild(macros) >= 1.118
@@ -72,7 +73,8 @@ DL10050 (Gigabit Ethernet).
 %setup -q -T -b1 -n dlink-sundance
 %else
 %setup -q -c
-%patch -p1
+%patch0 -p1
+%patch1 -p1
 %endif
 
 %build
