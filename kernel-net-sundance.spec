@@ -19,9 +19,11 @@ License:	GPL
 Group:		Base/Kernel
 # version 1.01d for kernel 2.2
 Source0:	ftp://ftp.dlink.co.uk/pub/adapters/dfe-550tx/dlh5x-2.2.tgz
+# Source0-md5:	584401fe67226d1b56cec39e3f7888ca
 # version 1.02d for kernel 2.4
 # from "ftp://ftp.dlink.co.uk/pub/adapters/dfe-580tx/linux 2.4x.tgz"
 Source1:	dlink-sundance.tar.gz
+# Source1-md5:	8b5fe5f29db3480ab2c5167e831604d3
 Patch0:		%{name}-header.patch
 %{!?_without_dist_kernel:BuildRequires:         kernel-headers }
 BuildRequires:	%{kgcc_package}
