@@ -2,16 +2,26 @@
 # conditional build
 # _without_dist_kernel          without distribution kernel
 
-%define         _rel 2
+%define		_kernel24	%(echo %{_kernel_ver} | grep -q '2\.[012]\.' ; echo $?)
+%if %{_kernel24}
+%define	_ver	1.02d
+%else
+%define	_ver	1.01d
+%endif
 
 Summary:	D-Link Sundance driver for Linux
 Summary(pl):	Sterownik do karty D-Link Sundance dla Linuksa
 Name:		kernel-net-sundance
-Version:	1.02d
+Version:	%{_ver}
+%define	_rel	3
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL
 Group:		Base/Kernel
+# version 1.01d for kernel 2.2
 Source0:	ftp://ftp.dlink.co.uk/pub/adapters/dfe-550tx/dlh5x-2.2.tgz
+# version 1.02d for kernel 2.4
+# from "ftp://ftp.dlink.co.uk/pub/adapters/dfe-580tx/linux 2.4x.tgz"
+Source1:	dlink-sundance.tar.gz
 %{!?_without_dist_kernel:BuildRequires:         kernel-headers }
 BuildRequires:	%{kgcc_package}
 Provides:	kernel(sundance)
@@ -20,12 +30,16 @@ Prereq:		/sbin/depmod
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-D-Link Sundance driver for Linux. One out of all that supports D-Link
-dfe-550tx adapters.
+D-Link Sundance driver for Linux. It supports D-Link DFE-550TX (Fast
+Ethernet), DFE-530TXS (Fast Ethernet 10/100), DFE-550FX
+(Fiber-optics), DFE-580TX (Quad Channel) and DL10050-based (Gigabit
+Ethernet) cards.
 
 %description -l pl
-Sterownik do karty D-Link Sundance dla Linuksa. Obs³uguje m. in.
-adaptery D-Link dfe-550tx.
+Sterownik do kart D-Link Sundance dla Linuksa. Obs³uguje karty D-Link
+DFE-550TX (Fast Ethernet), DFE-530TXS (Fast Ethernet 10/100),
+DFE-550FX (¶wiat³owodowe), DFE-580TX (4-portowe) oraz oparte na
+DL10050 (Gigabit Ethernet).
 
 %package -n kernel-smp-net-sundance
 Summary:	D-Link Sundance driver for Linux SMP
@@ -37,26 +51,36 @@ Prereq:		/sbin/depmod
 Provides:	kernel(sundance)
 
 %description -n kernel-smp-net-sundance
-D-Link Sundance driver for Linux SMP. One out of all that supports
-D-Link dfe-550tx adapters.
+D-Link Sundance driver for Linux SMP. It supports D-Link DFE-550TX
+(Fast Ethernet), DFE-530TXS (Fast Ethernet 10/100), DFE-550FX
+(Fiber-optics), DFE-580TX (Quad Channel) and DL10050-based (Gigabit
+Ethernet) cards.
+
 
 %description -n kernel-smp-net-sundance -l pl
-Sterownik do karty D-Link Sundance dla Linuksa SMP. Obs³uguje m. in.
-adaptery D-Link dfe-550tx
+Sterownik do karty D-Link Sundance dla Linuksa SMP. Obs³uguje karty
+D-Link DFE-550TX (Fast Ethernet), DFE-530TXS (Fast Ethernet 10/100),
+DFE-550FX (¶wiat³owodowe), DFE-580TX (4-portowe) oraz oparte na
+DL10050 (Gigabit Ethernet).
 
 %prep
+%if %{_kernel24}
+%setup -q -T -b1 -n dlink-sundance
+%else
 %setup -q -c
+%endif
 
 %build
-%{__make} SMP=1 CC="%{kgcc} -DCONFIG_X86_LOCAL_APIC -DSTB_WA"
+%{__make} CC="%{kgcc}" \
+	CFLAGS="%{rpmcflags} -D__KERNEL__ -DMODULE -D__SMP__ -DCONFIG_X86_LOCAL_APIC -Wall -I%{_kernelsrcdir}/include"
 mv -f sundance.o sundance-smp
 %{__make} clean
-%{__make} CC="%{kgcc} -DSTB_WA"
+%{__make} CC="%{kgcc}" \
+	CFLAGS="%{rpmcflags} -D__KERNEL__ -DMODULE -Wall -I%{_kernelsrcdir}/include"
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc
-install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/misc
+install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}{,smp}/misc
 
 install sundance-smp $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}smp/misc/sundance.o
 install sundance.o $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc/sundance.o
@@ -65,23 +89,35 @@ install sundance.o $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc/sundance.o
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-if [ -f `find /lib/modules/%{_kernel_ver} -name sundance.o` ]; then
-mv `find /lib/modules/%{_kernel_ver} -name sundance.o` `find /lib/modules/%{_kernel_ver} -name sundance.o |sed 's/\.o/_old.o/'`
+FNAME="`find /lib/modules/%{_kernel_ver} -name sundance.o`"
+if [ -f "$FNAME" ]; then
+	mv -f "$FNAME" `echo "$FNAME" |sed 's/\.o/_old.o/'`
 fi
 
 %post
 /sbin/depmod -a
 
 %postun
-if [ -f `find /lib/modules/%{_kernel_ver} -name sundance_old.o` ]; then
-mv `find /lib/modules/%{_kernel_ver} -name sundance_old.o` `find /lib/modules/%{_kernel_ver} -name sundance_old.o |sed 's/_old.o/\.o/'`
+FNAME="`find /lib/modules/%{_kernel_ver} -name sundance_old.o`"
+if [ -f "$FNAME" ]; then
+	mv -f "$FNAME" `echo "$FNAME" |sed 's/_old.o/\.o/'`
 fi
 /sbin/depmod -a
 
-%post -n kernel-smp-net-sundance
+%pre	-n kernel-smp-net-sundance
+FNAME="`find /lib/modules/%{_kernel_ver}smp -name sundance.o`"
+if [ -f "$FNAME" ]; then
+	mv -f "$FNAME" `echo "$FNAME" |sed 's/\.o/_old.o/'`
+fi
+
+%post	-n kernel-smp-net-sundance
 /sbin/depmod -a
 
-%postun -n kernel-smp-net-sundance
+%postun	-n kernel-smp-net-sundance
+FNAME="`find /lib/modules/%{_kernel_ver}smp -name sundance_old.o`"
+if [ -f "$FNAME" ]; then
+	mv -f "$FNAME" `echo "$FNAME" |sed 's/_old.o/\.o/'`
+fi
 /sbin/depmod -a
 
 %files
