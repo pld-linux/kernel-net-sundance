@@ -25,7 +25,7 @@ Source0:	ftp://ftp.dlink.co.uk/pub/adapters/dfe-550tx/dlh5x-2.2.tgz
 Source1:	dlink-sundance.tar.gz
 # Source1-md5:	8b5fe5f29db3480ab2c5167e831604d3
 Patch0:		%{name}-header.patch
-%{!?_without_dist_kernel:BuildRequires:         kernel-headers }
+%{!?_without_dist_kernel:BuildRequires:	kernel-headers }
 BuildRequires:	%{kgcc_package}
 BuildRequires:	rpmbuild(macros) >= 1.118
 %{!?_without_dist_kernel:%requires_releq_kernel_up}
