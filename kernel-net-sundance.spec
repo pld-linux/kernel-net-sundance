@@ -60,8 +60,10 @@ install sundance.o $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc/sundance.o
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post
+%pre
 mv `find /lib/modules/%{_kernel_ver} -name sundance.o` `find /lib/modules/%{_kernel_ver} -name sundance.o|sed 's/\.o/_old.o/'`
+
+%post
 /sbin/depmod -a
 
 %postun
