@@ -13,7 +13,7 @@ Summary:	D-Link Sundance driver for Linux
 Summary(pl):	Sterownik do karty D-Link Sundance dla Linuksa
 Name:		kernel-net-sundance
 Version:	%{_ver}
-%define	_rel	3
+%define	_rel	4
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL
 Group:		Base/Kernel
@@ -22,6 +22,7 @@ Source0:	ftp://ftp.dlink.co.uk/pub/adapters/dfe-550tx/dlh5x-2.2.tgz
 # version 1.02d for kernel 2.4
 # from "ftp://ftp.dlink.co.uk/pub/adapters/dfe-580tx/linux 2.4x.tgz"
 Source1:	dlink-sundance.tar.gz
+Patch0:		%{name}-header.patch
 %{!?_without_dist_kernel:BuildRequires:         kernel-headers }
 BuildRequires:	%{kgcc_package}
 Provides:	kernel(sundance)
@@ -68,11 +69,16 @@ DL10050 (Gigabit Ethernet).
 %setup -q -T -b1 -n dlink-sundance
 %else
 %setup -q -c
+%patch -p1
 %endif
 
 %build
 %{__make} CC="%{kgcc}" \
-	CFLAGS="%{rpmcflags} -D__KERNEL__ -DMODULE -D__SMP__ -DCONFIG_X86_LOCAL_APIC -Wall -I%{_kernelsrcdir}/include"
+	CFLAGS="%{rpmcflags} -D__KERNEL__ -DMODULE -D__SMP__ \
+%ifarch %{ix86}
+	-DCONFIG_X86_LOCAL_APIC \
+%endif
+	-Wall -I%{_kernelsrcdir}/include"
 mv -f sundance.o sundance-smp
 %{__make} clean
 %{__make} CC="%{kgcc}" \
