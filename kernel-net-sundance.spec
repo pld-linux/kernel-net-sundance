@@ -27,6 +27,7 @@ Source1:	dlink-sundance.tar.gz
 Patch0:		%{name}-header.patch
 %{!?_without_dist_kernel:BuildRequires:         kernel-headers }
 BuildRequires:	%{kgcc_package}
+BuildRequires:	rpmbuild(macros) >= 1.118
 %{!?_without_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
 Provides:	kernel(sundance)
@@ -102,14 +103,14 @@ if [ -f "$FNAME" ]; then
 fi
 
 %post
-/sbin/depmod -a %{!?_without_dist_kernel:-F /boot/System.map-%{_kernel_ver} }%{_kernel_ver}
+%depmod %{_kernel_ver}
 
 %postun
 FNAME="`find /lib/modules/%{_kernel_ver} -name sundance_old.o`"
 if [ -f "$FNAME" ]; then
 	mv -f "$FNAME" `echo "$FNAME" |sed 's/_old.o/\.o/'`
 fi
-/sbin/depmod -a %{!?_without_dist_kernel:-F /boot/System.map-%{_kernel_ver} }%{_kernel_ver}
+%depmod %{_kernel_ver}
 
 %pre	-n kernel-smp-net-sundance
 FNAME="`find /lib/modules/%{_kernel_ver}smp -name sundance.o`"
@@ -118,14 +119,14 @@ if [ -f "$FNAME" ]; then
 fi
 
 %post	-n kernel-smp-net-sundance
-/sbin/depmod -a %{!?_without_dist_kernel:-F /boot/System.map-%{_kernel_ver}smp }%{_kernel_ver}smp
+%depmod %{_kernel_ver}smp
 
 %postun	-n kernel-smp-net-sundance
 FNAME="`find /lib/modules/%{_kernel_ver}smp -name sundance_old.o`"
 if [ -f "$FNAME" ]; then
 	mv -f "$FNAME" `echo "$FNAME" |sed 's/_old.o/\.o/'`
 fi
-/sbin/depmod -a %{!?_without_dist_kernel:-F /boot/System.map-%{_kernel_ver}smp }%{_kernel_ver}smp
+%depmod %{_kernel_ver}smp
 
 %files
 %defattr(644,root,root,755)
