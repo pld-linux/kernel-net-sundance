@@ -1,6 +1,7 @@
-# conditional build
+#
+# Conditional build:
 # _without_dist_kernel          without distribution kernel
-
+#
 %define		_kernel24	%(echo %{_kernel_ver} | grep -q '2\.[012]\.' ; echo $?)
 %if %{_kernel24}
 %define	_ver	1.02d
@@ -24,9 +25,9 @@ Source1:	dlink-sundance.tar.gz
 Patch0:		%{name}-header.patch
 %{!?_without_dist_kernel:BuildRequires:         kernel-headers }
 BuildRequires:	%{kgcc_package}
-Provides:	kernel(sundance)
-Prereq:		/sbin/depmod
 %{!?_without_dist_kernel:%requires_releq_kernel_up}
+Requires(post,postun):	/sbin/depmod
+Provides:	kernel(sundance)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -46,8 +47,8 @@ Summary:	D-Link Sundance driver for Linux SMP
 Summary(pl):	Sterownik do karty D-Link Sundance dla Linuksa SMP
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-Prereq:		/sbin/depmod
 %{!?_without_dist_kernel:%requires_releq_kernel_smp}
+Requires(post,postun):	/sbin/depmod
 Provides:	kernel(sundance)
 
 %description -n kernel-smp-net-sundance
@@ -99,14 +100,14 @@ if [ -f "$FNAME" ]; then
 fi
 
 %post
-/sbin/depmod -a
+/sbin/depmod -a -F /boot/System.map-%{_kernel_ver} %{_kernel_ver}
 
 %postun
 FNAME="`find /lib/modules/%{_kernel_ver} -name sundance_old.o`"
 if [ -f "$FNAME" ]; then
 	mv -f "$FNAME" `echo "$FNAME" |sed 's/_old.o/\.o/'`
 fi
-/sbin/depmod -a
+/sbin/depmod -a -F /boot/System.map-%{_kernel_ver} %{_kernel_ver}
 
 %pre	-n kernel-smp-net-sundance
 FNAME="`find /lib/modules/%{_kernel_ver}smp -name sundance.o`"
@@ -115,14 +116,14 @@ if [ -f "$FNAME" ]; then
 fi
 
 %post	-n kernel-smp-net-sundance
-/sbin/depmod -a
+/sbin/depmod -a -F /boot/System.map-%{_kernel_ver}smp %{_kernel_ver}smp
 
 %postun	-n kernel-smp-net-sundance
 FNAME="`find /lib/modules/%{_kernel_ver}smp -name sundance_old.o`"
 if [ -f "$FNAME" ]; then
 	mv -f "$FNAME" `echo "$FNAME" |sed 's/_old.o/\.o/'`
 fi
-/sbin/depmod -a
+/sbin/depmod -a -F /boot/System.map-%{_kernel_ver}smp %{_kernel_ver}smp
 
 %files
 %defattr(644,root,root,755)
