@@ -1,0 +1,15 @@
+diff -uNr kernel-net-sundance-1.01d/sundance.h kernel-net-sundance-1.01d.new/sundance.h
+--- kernel-net-sundance-1.01d/sundance.h	Mon Jul 23 03:54:49 2001
++++ kernel-net-sundance-1.01d.new/sundance.h	Sun Jun 30 09:45:39 2002
+@@ -365,9 +365,9 @@
+ 	int mii_cnt;						/* MII device addresses. */
+ 	u16 advertising;					/* NWay media advertisement */
+ 	unsigned char phys[2];				/* MII device addresses. */
+-#if (LINUX_VERSION_CODE >= 0x02032a)
++/* #if (LINUX_VERSION_CODE >= 0x02032a) */
+ 	spinlock_t	lock;
+-#endif	
++/* #endif	*/
+ };
+ 
+ 
