@@ -100,14 +100,14 @@ if [ -f "$FNAME" ]; then
 fi
 
 %post
-/sbin/depmod -a -F /boot/System.map-%{_kernel_ver} %{_kernel_ver}
+/sbin/depmod -a %{!?_without_dist_kernel:-F /boot/System.map-%{_kernel_ver} }%{_kernel_ver}
 
 %postun
 FNAME="`find /lib/modules/%{_kernel_ver} -name sundance_old.o`"
 if [ -f "$FNAME" ]; then
 	mv -f "$FNAME" `echo "$FNAME" |sed 's/_old.o/\.o/'`
 fi
-/sbin/depmod -a -F /boot/System.map-%{_kernel_ver} %{_kernel_ver}
+/sbin/depmod -a %{!?_without_dist_kernel:-F /boot/System.map-%{_kernel_ver} }%{_kernel_ver}
 
 %pre	-n kernel-smp-net-sundance
 FNAME="`find /lib/modules/%{_kernel_ver}smp -name sundance.o`"
@@ -116,14 +116,14 @@ if [ -f "$FNAME" ]; then
 fi
 
 %post	-n kernel-smp-net-sundance
-/sbin/depmod -a -F /boot/System.map-%{_kernel_ver}smp %{_kernel_ver}smp
+/sbin/depmod -a %{!?_without_dist_kernel:-F /boot/System.map-%{_kernel_ver}smp }%{_kernel_ver}smp
 
 %postun	-n kernel-smp-net-sundance
 FNAME="`find /lib/modules/%{_kernel_ver}smp -name sundance_old.o`"
 if [ -f "$FNAME" ]; then
 	mv -f "$FNAME" `echo "$FNAME" |sed 's/_old.o/\.o/'`
 fi
-/sbin/depmod -a -F /boot/System.map-%{_kernel_ver}smp %{_kernel_ver}smp
+/sbin/depmod -a %{!?_without_dist_kernel:-F /boot/System.map-%{_kernel_ver}smp }%{_kernel_ver}smp
 
 %files
 %defattr(644,root,root,755)
