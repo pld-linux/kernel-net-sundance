@@ -2,7 +2,7 @@
 # Conditional build:
 # _without_dist_kernel          without distribution kernel
 #
-%define		_kernel24	%(echo %{_kernel_ver} | grep -q '2\.[012]\.' ; echo $?)
+%define		_kernel24	%(echo %{_kernel_ver} | grep -qv '2\.4\.' ; echo $?)
 %if %{_kernel24}
 %define	_ver	1.02d
 %else
