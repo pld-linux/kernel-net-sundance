@@ -13,7 +13,7 @@ Summary:	D-Link Sundance driver for Linux
 Summary(pl):	Sterownik do karty D-Link Sundance dla Linuksa
 Name:		kernel-net-sundance
 Version:	%{_ver}
-%define	_rel	11
+%define	_rel	12
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL
 Group:		Base/Kernel
