@@ -5,12 +5,13 @@
 %define         _rel 1
 
 Summary:	DLINK Sundance driver for Linux
-Summary(pl):	Sterownik do karty Sundance
+Summary(pl):	Sterownik do karty Sundance dla Linuksa
 Name:		kernel-net-sundance
 Version:	1.02d
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL
 Group:		Base/Kernel
+# from http://www.cbk.no/produkter/drivere/d-link/Adapters/DFE-580TX/Driver/linux.tgz
 Source0:	dlink-sundance.tar.gz
 %{!?_without_dist_kernel:BuildRequires:         kernel-headers }
 BuildRequires:	%{kgcc_package}
@@ -20,24 +21,25 @@ Prereq:		/sbin/depmod
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-DLINK Sundance driver for Linux
+DLINK Sundance driver for Linux.
 
 %description -l pl
-Sterownik do karty Sundance
+Sterownik do karty Sundance dla Linuksa.
 
 %package -n kernel-smp-net-sundance
 Summary:	DLINK Sundance driver for Linux SMP
-Summary(pl):	Sterownik do karty Intel(R) PRO/100
+Summary(pl):	Sterownik do karty Sundance dla Linuksa SMP
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Prereq:		/sbin/depmod
 %{!?_without_dist_kernel:%requires_releq_kernel_smp}
-Obsoletes:	e100
-Obsoletes:	linux-net-e100
-Provides:	kernel(e100)
+Provides:	kernel(sundance)
 
 %description -n kernel-smp-net-sundance
-DLINK Sundance driver for Linux SMP
+DLINK Sundance driver for Linux SMP.
+
+%description -n kernel-smp-net-sundance -l pl
+Sterownik do karty Sundance dla Linuksa SMP.
 
 %prep
 %setup -q -n dlink-sundance
@@ -47,7 +49,6 @@ DLINK Sundance driver for Linux SMP
 mv -f sundance.o sundance-smp
 %{__make} clean
 %{__make} CC="%{kgcc} -DSTB_WA"
-
 
 %install
 rm -rf $RPM_BUILD_ROOT
