@@ -2,17 +2,16 @@
 # conditional build
 # _without_dist_kernel          without distribution kernel
 
-%define         _rel 1
+%define         _rel 2
 
-Summary:	DLINK Sundance driver for Linux
-Summary(pl):	Sterownik do karty Sundance dla Linuksa
+Summary:	D-Link Sundance driver for Linux
+Summary(pl):	Sterownik do karty D-Link Sundance dla Linuksa
 Name:		kernel-net-sundance
 Version:	1.02d
 Release:	%{_rel}@%{_kernel_ver_str}
 License:	GPL
 Group:		Base/Kernel
-# from http://www.cbk.no/produkter/drivere/d-link/Adapters/DFE-580TX/Driver/linux.tgz
-Source0:	dlink-sundance.tar.gz
+Source0:	ftp://ftp.dlink.co.uk/pub/adapters/dfe-550tx/dlh5x-2.2.tgz
 %{!?_without_dist_kernel:BuildRequires:         kernel-headers }
 BuildRequires:	%{kgcc_package}
 Provides:	kernel(sundance)
@@ -21,14 +20,16 @@ Prereq:		/sbin/depmod
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-DLINK Sundance driver for Linux.
+D-Link Sundance driver for Linux. One out of all that supports D-Link
+dfe-550tx adapters.
 
 %description -l pl
-Sterownik do karty Sundance dla Linuksa.
+Sterownik do karty D-Link Sundance dla Linuksa. Obs³uguje m. in.
+adaptery D-Link dfe-550tx.
 
 %package -n kernel-smp-net-sundance
-Summary:	DLINK Sundance driver for Linux SMP
-Summary(pl):	Sterownik do karty Sundance dla Linuksa SMP
+Summary:	D-Link Sundance driver for Linux SMP
+Summary(pl):	Sterownik do karty D-Link Sundance dla Linuksa SMP
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 Prereq:		/sbin/depmod
@@ -36,13 +37,15 @@ Prereq:		/sbin/depmod
 Provides:	kernel(sundance)
 
 %description -n kernel-smp-net-sundance
-DLINK Sundance driver for Linux SMP.
+D-Link Sundance driver for Linux SMP. One out of all that supports
+D-Link dfe-550tx adapters.
 
 %description -n kernel-smp-net-sundance -l pl
-Sterownik do karty Sundance dla Linuksa SMP.
+Sterownik do karty D-Link Sundance dla Linuksa SMP. Obs³uguje m. in.
+adaptery D-Link dfe-550tx
 
 %prep
-%setup -q -n dlink-sundance
+%setup -q -c
 
 %build
 %{__make} SMP=1 CC="%{kgcc} -DCONFIG_X86_LOCAL_APIC -DSTB_WA"
@@ -62,13 +65,17 @@ install sundance.o $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc/sundance.o
 rm -rf $RPM_BUILD_ROOT
 
 %pre
-mv `find /lib/modules/%{_kernel_ver} -name sundance.o` `find /lib/modules/%{_kernel_ver} -name sundance.o|sed 's/\.o/_old.o/'`
+if [ -f `find /lib/modules/%{_kernel_ver} -name sundance.o` ]; then
+mv `find /lib/modules/%{_kernel_ver} -name sundance.o` `find /lib/modules/%{_kernel_ver} -name sundance.o |sed 's/\.o/_old.o/'`
+fi
 
 %post
 /sbin/depmod -a
 
 %postun
-mv `find /lib/modules/%{_kernel_ver} -name sundance_old.o` `find /lib/modules/%{_kernel_ver} -name sundance_old.o|sed 's/|old.o/.o/'`
+if [ -f `find /lib/modules/%{_kernel_ver} -name sundance_old.o` ]; then
+mv `find /lib/modules/%{_kernel_ver} -name sundance_old.o` `find /lib/modules/%{_kernel_ver} -name sundance_old.o |sed 's/_old.o/\.o/'`
+fi
 /sbin/depmod -a
 
 %post -n kernel-smp-net-sundance
