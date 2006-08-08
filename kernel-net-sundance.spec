@@ -72,7 +72,7 @@ DL10050 (Gigabit Ethernet).
 %setup -q -T -b1 -n dlink-sundance
 %else
 %setup -q -c
-%patch -p1
+%patch0 -p1
 %endif
 
 %build
