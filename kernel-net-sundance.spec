@@ -1,6 +1,6 @@
 #
 # Conditional build:
-# _without_dist_kernel          without distribution kernel
+%bcond_without	dist_kernel		# without distribution kernel
 #
 %define		_kernel24	%(echo %{_kernel_ver} | grep -qv '2\.4\.' ; echo $?)
 %if %{_kernel24}
@@ -25,10 +25,10 @@ Source0:	ftp://ftp.dlink.co.uk/pub/adapters/dfe-550tx/dlh5x-2.2.tgz
 Source1:	dlink-sundance.tar.gz
 # Source1-md5:	8b5fe5f29db3480ab2c5167e831604d3
 Patch0:		%{name}-header.patch
-%{!?_without_dist_kernel:BuildRequires:	kernel-headers }
+%{?with_dist_kernel:BuildRequires:	kernel-headers }
 BuildRequires:	%{kgcc_package}
 BuildRequires:	rpmbuild(macros) >= 1.118
-%{!?_without_dist_kernel:%requires_releq_kernel_up}
+%{?with_dist_kernel:%requires_releq_kernel_up}
 Requires(post,postun):	/sbin/depmod
 Provides:	kernel(sundance)
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -50,7 +50,7 @@ Summary:	D-Link Sundance driver for Linux SMP
 Summary(pl):	Sterownik do karty D-Link Sundance dla Linuksa SMP
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-%{!?_without_dist_kernel:%requires_releq_kernel_smp}
+%{?with_dist_kernel:%requires_releq_kernel_smp}
 Requires(post,postun):	/sbin/depmod
 Provides:	kernel(sundance)
 
