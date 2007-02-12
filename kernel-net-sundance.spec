@@ -10,7 +10,7 @@
 %endif
 
 Summary:	D-Link Sundance driver for Linux
-Summary(pl):	Sterownik do karty D-Link Sundance dla Linuksa
+Summary(pl.UTF-8):   Sterownik do karty D-Link Sundance dla Linuksa
 Name:		kernel-net-sundance
 Version:	%{_ver}
 %define	_rel	11
@@ -39,15 +39,15 @@ Ethernet), DFE-530TXS (Fast Ethernet 10/100), DFE-550FX
 (Fiber-optics), DFE-580TX (Quad Channel) and DL10050-based (Gigabit
 Ethernet) cards.
 
-%description -l pl
-Sterownik do kart D-Link Sundance dla Linuksa. Obs≥uguje karty D-Link
+%description -l pl.UTF-8
+Sterownik do kart D-Link Sundance dla Linuksa. Obs≈Çuguje karty D-Link
 DFE-550TX (Fast Ethernet), DFE-530TXS (Fast Ethernet 10/100),
-DFE-550FX (∂wiat≥owodowe), DFE-580TX (4-portowe) oraz oparte na
+DFE-550FX (≈õwiat≈Çowodowe), DFE-580TX (4-portowe) oraz oparte na
 DL10050 (Gigabit Ethernet).
 
 %package -n kernel-smp-net-sundance
 Summary:	D-Link Sundance driver for Linux SMP
-Summary(pl):	Sterownik do karty D-Link Sundance dla Linuksa SMP
+Summary(pl.UTF-8):   Sterownik do karty D-Link Sundance dla Linuksa SMP
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
@@ -61,10 +61,10 @@ D-Link Sundance driver for Linux SMP. It supports D-Link DFE-550TX
 Ethernet) cards.
 
 
-%description -n kernel-smp-net-sundance -l pl
-Sterownik do karty D-Link Sundance dla Linuksa SMP. Obs≥uguje karty
+%description -n kernel-smp-net-sundance -l pl.UTF-8
+Sterownik do karty D-Link Sundance dla Linuksa SMP. Obs≈Çuguje karty
 D-Link DFE-550TX (Fast Ethernet), DFE-530TXS (Fast Ethernet 10/100),
-DFE-550FX (∂wiat≥owodowe), DFE-580TX (4-portowe) oraz oparte na
+DFE-550FX (≈õwiat≈Çowodowe), DFE-580TX (4-portowe) oraz oparte na
 DL10050 (Gigabit Ethernet).
 
 %prep
