@@ -10,7 +10,7 @@
 %endif
 
 Summary:	D-Link Sundance driver for Linux
-Summary(pl.UTF-8):   Sterownik do karty D-Link Sundance dla Linuksa
+Summary(pl.UTF-8):	Sterownik do karty D-Link Sundance dla Linuksa
 Name:		kernel-net-sundance
 Version:	%{_ver}
 %define	_rel	11
@@ -47,7 +47,7 @@ DL10050 (Gigabit Ethernet).
 
 %package -n kernel-smp-net-sundance
 Summary:	D-Link Sundance driver for Linux SMP
-Summary(pl.UTF-8):   Sterownik do karty D-Link Sundance dla Linuksa SMP
+Summary(pl.UTF-8):	Sterownik do karty D-Link Sundance dla Linuksa SMP
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
